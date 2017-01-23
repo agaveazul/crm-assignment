@@ -9,9 +9,11 @@ class CRM
   end
 
   def main_menu
+    while true
       print_main_menu
       user_selected = gets.to_i
       call_option(user_selected)
+    end
   end
 
   def print_main_menu
@@ -48,12 +50,14 @@ class CRM
     print "Enter Note: "
     note = gets.chomp
 
-    Contact.create(first_name, last_name, email, note)
+    contact = Contact.create(first_name, last_name, email, note)
+    return contact
   end
 
   def modify_existing_contact
     contact = search_by_attribute
-    if contact.count == 0
+    #if contact.count == 0 use this if you want to search for an array of contacts
+    if contact == nil
       return "I could not find a contact to modify."
     else
       puts "What field would you like to modify"
@@ -66,40 +70,50 @@ class CRM
         when 1
           puts "What would you like to change the first name to?"
           first_name_new = gets.chomp
-          contact[0].first_name= first_name_new
+          #contact[0].first_name= first_name_new, use this if you want to work with a group of contacts
+          contact.first_name= first_name_new
         when 2
           puts "What would you like to change the last name to?"
           last_name_new = gets.chomp
-          contact[0].last_name= last_name_new
+          #contact[0].last_name= last_name_new, use this if you want to work with a group of contacts
+          contact.last_name= last_name_new
         when 3
           puts "What would you like to change the e-mail to?"
           email_new = gets.chomp
-          contact[0].email= email_new
+          #contact[0].email= email_new, use this if you want to work with a group of contacts
+          contact.email= email_new
         when 4
           puts "What would you like to change the note to?"
           note_new = gets.chomp
-          contact[0].note= note_new
+          #contact[0].note= note_new, use this if you want to work with a group of contacts
+          contact.note= note_new
         else
           return "Sorry, that is not an option."
         end
     end
   end
 
-  def delete_contact(attribute, value)
-    to_be_deleted = Contact.find_by(attribute, value)
-    case to_be_deleted.count
-    when 0
+  def delete_contact
+    to_be_deleted = search_by_attribute
+    if to_be_deleted == nil
       return "There was no contact found with a #{attribute} of #{value}."
-    when 1
-      to_be_deleted[0].delete
     else
-      puts "There are multiple contacts with a #{attribute} of #{value}. Please narrow your selection further."
-      to_be_deleted
+      to_be_deleted.delete
     end
+    #to_be_deleted = Contact.find_by(attribute, value) - use when wanting to return multiple contacts
+    # case to_be_deleted.count
+    # when 0
+    #   return "There was no contact found with a #{attribute} of #{value}."
+    # when 1
+    #   to_be_deleted[0].delete
+    # else
+    #   puts "There are multiple contacts with a #{attribute} of #{value}. Please narrow your selection further."
+    #   to_be_deleted
+    # end
   end
 
   def display_all_contacts
-    Contact.all
+    return Contact.all
   end
 
   def search_by_attribute
@@ -128,7 +142,7 @@ class CRM
       return Contact.find_by("note",note)
     else
       print "Sorry that is not a valid option."
-      contact = []
+      contact = nil
     end
   end
 
