@@ -50,15 +50,17 @@ class Contact
   # by specifying both the name of the attribute and the value
   # eg. searching for 'first_name', 'Betty' should return the first contact named Betty
   def self.find_by(attribute, value)
-    array = []
+    #array = [] use this if I want to be able to select a group of contacts
+    found_contact = nil
     @@contacts.each do |contact|
       if contact.send(attribute) == value
-        array << contact
+        found_contact = contact
+        #array << contact
       else
         nil
       end
     end
-    return array
+    found_contact
   end
 
   # This method should delete all of the contacts
